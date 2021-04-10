@@ -1,32 +1,54 @@
 package com.example.todo.models
 
+import android.os.Build
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.RequiresApi
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.sql.Timestamp
 
 @Entity
 data class Note(
     @PrimaryKey(autoGenerate = true)
-    val id:Int,
+    var id:Int,
     @ColumnInfo(name="text")
-    val text: String?,
+    var text: String?,
     @ColumnInfo(name="time")
-    val timestamp: Long,
+    var timestamp: Long,
     @ColumnInfo(name="isDone")
-    val isDone:Boolean):Parcelable {
+    var isDone:Boolean,
+):Parcelable {
+
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString(),
         parcel.readLong(),
-        parcel.readByte() != 0.toByte()
-    ) {
+        parcel.readByte() != 0.toByte()) {
+    }
+
+    constructor():this(0,"Pizdec",System.currentTimeMillis(),true){
+
     }
 
     override fun hashCode(): Int {
         return super.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Note
+
+        if (id != other.id) return false
+        if (text != other.text) return false
+        if (timestamp != other.timestamp) return false
+        if (isDone != other.isDone) return false
+
+        return true
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -49,4 +71,5 @@ data class Note(
             return arrayOfNulls(size)
         }
     }
+
 }
